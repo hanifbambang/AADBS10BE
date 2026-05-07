@@ -7,22 +7,18 @@ const Note = require("./models/Note");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// ─── Middleware ───────────────────────────────────────────────────────────────
 app.use(cors({ origin: process.env.CLIENT_URL || "http://localhost:3000" }));
 app.use(express.json());
 
-// ─── MongoDB Connection ───────────────────────────────────────────────────────
 mongoose
   .connect(process.env.MONGODB_URI)
-  .then(() => console.log("✅ Connected to MongoDB Atlas"))
+  .then(() => console.log("Connected to MongoDB Atlas"))
   .catch((err) => {
-    console.error("❌ MongoDB connection error:", err.message);
+    console.error("MongoDB connection error:", err.message);
     process.exit(1);
   });
 
-// ─── Routes ───────────────────────────────────────────────────────────────────
 
-// GET all notes
 app.get("/api/notes", async (req, res) => {
   try {
     const notes = await Note.find().sort({ pinned: -1, createdAt: -1 });
@@ -32,7 +28,6 @@ app.get("/api/notes", async (req, res) => {
   }
 });
 
-// GET single note
 app.get("/api/notes/:id", async (req, res) => {
   try {
     const note = await Note.findById(req.params.id);
@@ -43,7 +38,6 @@ app.get("/api/notes/:id", async (req, res) => {
   }
 });
 
-// POST create note
 app.post("/api/notes", async (req, res) => {
   try {
     const { title, content, color, pinned } = req.body;
@@ -54,7 +48,6 @@ app.post("/api/notes", async (req, res) => {
   }
 });
 
-// PUT update note
 app.put("/api/notes/:id", async (req, res) => {
   try {
     const { title, content, color, pinned } = req.body;
@@ -70,7 +63,6 @@ app.put("/api/notes/:id", async (req, res) => {
   }
 });
 
-// DELETE note
 app.delete("/api/notes/:id", async (req, res) => {
   try {
     const note = await Note.findByIdAndDelete(req.params.id);
@@ -81,7 +73,6 @@ app.delete("/api/notes/:id", async (req, res) => {
   }
 });
 
-// PATCH toggle pin
 app.patch("/api/notes/:id/pin", async (req, res) => {
   try {
     const note = await Note.findById(req.params.id);
@@ -94,12 +85,10 @@ app.patch("/api/notes/:id/pin", async (req, res) => {
   }
 });
 
-// Health check
 app.get("/api/health", (req, res) => {
   res.json({ success: true, message: "Server is running", dbStatus: mongoose.connection.readyState === 1 ? "connected" : "disconnected" });
 });
 
-// ─── Start ────────────────────────────────────────────────────────────────────
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(`Server running on http://localhost:${PORT}`);
 });
