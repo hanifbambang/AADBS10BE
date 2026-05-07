@@ -95,6 +95,6 @@ app.get("/api/health", (req, res) => {
   res.json({ success: true, message: "Server is running", dbStatus: mongoose.connection.readyState === 1 ? "connected" : "disconnected" });
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
